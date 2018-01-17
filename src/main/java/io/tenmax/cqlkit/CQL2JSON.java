@@ -17,9 +17,9 @@ import java.util.Map;
 
 public class CQL2JSON extends AbstractMapper{
 
-    private ColumnDefinitions.Definition[] definitions;
-    private Gson gson = new Gson();
-    private HashSet<String> jsonColumns = new HashSet<>();
+    protected ColumnDefinitions.Definition[] definitions;
+    protected Gson gson = new Gson();
+    protected HashSet<String> jsonColumns = new HashSet<>();
 
     @Override
     protected void prepareOptions(Options options) {
@@ -94,14 +94,18 @@ public class CQL2JSON extends AbstractMapper{
                 }
             }
 
-            JsonElement jsonValue =
-                    RowUtils.toJson(type, value, jsonColumns.contains(key));
+            JsonElement jsonValue = RowUtils.toJson(type, value, jsonColumns.contains(key));
             root.add(key, jsonValue);
         }
 
         return gson.toJson(root);
     }
 
+    @Override
+    protected String fileExtension() {
+        return "json";
+    }
+    
     public static void main(String[] args) {
         CQL2JSON cql2json = new CQL2JSON();
         cql2json.start(args);

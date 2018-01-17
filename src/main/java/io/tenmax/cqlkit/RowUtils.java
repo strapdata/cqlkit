@@ -59,8 +59,9 @@ public class RowUtils {
                 } else {
                     return new JsonPrimitive((String) value);
                 }
-            case UUID:
             case INET:
+                return new JsonPrimitive(((InetAddress)value).getHostAddress());
+            case UUID:
             case TIMEUUID:
                 return new JsonPrimitive(typeCodec.format(value));
             case TIMESTAMP:

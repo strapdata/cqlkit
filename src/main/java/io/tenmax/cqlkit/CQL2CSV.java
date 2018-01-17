@@ -65,6 +65,7 @@ public class CQL2CSV extends AbstractMapper{
 
             try {
                 CSVPrinter print = csvFormat
+                        .withRecordSeparator(System.getProperty("line.separator"))
                         .withHeader(list.toArray(new String[]{}))
                         .print(out);
                 print.flush();
@@ -101,6 +102,11 @@ public class CQL2CSV extends AbstractMapper{
         return stringBuffer.toString();
     }
 
+    @Override
+    protected String fileExtension() {
+        return "csv";
+    }
+    
     public static void main(String[] args) {
         CQL2CSV cql2csv = new CQL2CSV();
         cql2csv.start(args);

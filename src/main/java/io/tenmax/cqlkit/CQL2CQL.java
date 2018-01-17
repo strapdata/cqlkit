@@ -97,4 +97,9 @@ public class CQL2CQL extends AbstractMapper{
         matcher.appendTail(result);
         return result.toString();
     }
+
+    @Override
+    protected String fileExtension() {
+        return "cql";
+    }
 }

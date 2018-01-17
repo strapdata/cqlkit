@@ -18,7 +18,8 @@ task createAllStartScripts() << {
 
 def scripts = [ 'cql2csv': 'io.tenmax.cqlkit.CQL2CSV',
                 'cql2json':'io.tenmax.cqlkit.CQL2JSON',
-                'cql2cql':'io.tenmax.cqlkit.CQL2CQL'
+                'cql2cql':'io.tenmax.cqlkit.CQL2CQL',
+                'cql2es':'io.tenmax.cqlkit.CQL2ES'
 ]
     scripts.each() { scriptName, className ->
     def t = tasks.create(name: scriptName+'StartScript', type: CreateStartScripts) {
@@ -36,7 +37,7 @@ def scripts = [ 'cql2csv': 'io.tenmax.cqlkit.CQL2CSV',
 
 dependencies {
     // Cassandra Driver
-	compile 'com.datastax.cassandra:cassandra-driver-core:3.0.5'
+	compile 'com.datastax.cassandra:cassandra-driver-core:3.1.4'
 
     // Json
     compile 'com.google.code.gson:gson:2.3.1'
@@ -54,6 +55,8 @@ dependencies {
     // Configure
     compile 'commons-configuration:commons-configuration:1.10'
 
+    // file compression
+    compile group: 'org.apache.commons', name: 'commons-compress', version: '1.15'
 
     ///////////////////////////////////////////////
     testCompile 'junit:junit:4.12'
