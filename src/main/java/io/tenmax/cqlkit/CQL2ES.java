@@ -29,11 +29,15 @@ public class CQL2ES extends CQL2JSON {
     @Override
     protected String map(Row row) {
         String doc = super.map(row);
+        
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("index", commandLine.getOptionValue("i") );
+        jsonObject.addProperty("_index", commandLine.getOptionValue("i") );
         jsonObject.addProperty("_type", commandLine.getOptionValue("t") );
         jsonObject.addProperty("_id",  buildElasticId(row));
-        return gson.toJson(jsonObject)+System.getProperty("line.separator")+doc;
+        
+        JsonObject indexObject = new JsonObject();
+        indexObject.add("index",  jsonObject);
+        return gson.toJson(indexObject)+System.getProperty("line.separator")+doc;
     }
     
     @Override

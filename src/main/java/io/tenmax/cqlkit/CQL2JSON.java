@@ -92,8 +92,13 @@ public class CQL2JSON extends AbstractMapper{
                 if (map.size() == 0) {
                     continue;
                 }
+            } else if (type.getName() == DataType.Name.DOUBLE) {
+                double v = (Double)value;
+                if (v==Double.NaN || v==Double.POSITIVE_INFINITY || v==Double.NEGATIVE_INFINITY) {
+                    continue;
+                }
             }
-
+        
             JsonElement jsonValue = RowUtils.toJson(type, value, jsonColumns.contains(key));
             root.add(key, jsonValue);
         }

@@ -15,6 +15,7 @@ import com.datastax.driver.core.HostDistance;
 import com.datastax.driver.core.KeyspaceMetadata;
 import com.datastax.driver.core.NettySSLOptions;
 import com.datastax.driver.core.PoolingOptions;
+import com.datastax.driver.core.ProtocolVersion;
 import com.datastax.driver.core.QueryOptions;
 import com.datastax.driver.core.SSLOptions;
 import com.datastax.driver.core.Session;
@@ -43,7 +44,10 @@ public class SessionFactory implements AutoCloseable{
 
 
         Cluster.Builder builder = Cluster.builder();
-
+        builder.withProtocolVersion(ProtocolVersion.V4); // compatible cassandra 2.1, 
+        // see https://docs.datastax.com/en/developer/driver-matrix/doc/common/driverMatrix.html
+        // see https://github.com/datastax/java-driver/tree/3.0/manual/native_protocol
+        
         Optional<HierarchicalINIConfiguration> rcOpt = Optional.ofNullable(cqlshrc);
 
         if(commandLine.hasOption("c")) {
@@ -72,16 +76,19 @@ public class SessionFactory implements AutoCloseable{
             }
         }
 
+           
         Optional<SubnodeConfiguration> sslOpt = rcOpt.map(rc  -> rc.getSection("ssl"));
         if (sslOpt.isPresent()) {
             SslContextBuilder sslBuilder = SslContextBuilder.forClient().sslProvider(SslProvider.JDK);
             Optional<String> certFile = sslOpt.map(f -> f.getString("certfile"));
             Optional<String> validate = sslOpt.map(f -> f.getString("validate")); // TODO: support validate = false
-            if (certFile.isPresent()) 
+            if (certFile.isPresent()) {
                 sslBuilder.trustManager(new File(certFile.get()));
-            SSLOptions sslOptions = new NettySSLOptions(sslBuilder.build());
-            builder.withSSL(sslOptions);
+                SSLOptions sslOptions = new NettySSLOptions(sslBuilder.build());
+                builder.withSSL(sslOptions);
+            }
         }
+            
         
         if(commandLine.hasOption("fetchSize")) {
             int fetchSize = Integer.parseInt(commandLine.getOptionValue("fetchSize"));
@@ -96,6 +103,7 @@ public class SessionFactory implements AutoCloseable{
         poolingOptions.setMaxConnectionsPerHost(HostDistance.LOCAL, Integer.getInteger("localMaxCon", 16));
         builder.withPoolingOptions(poolingOptions);
         builder.withReconnectionPolicy(new ConstantReconnectionPolicy(1000));
+        
         
         cluster = builder.build();
         session = cluster.connect();
