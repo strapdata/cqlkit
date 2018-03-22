@@ -1,4 +1,5 @@
 # CQLKIT
+
 *cqlkit* is a CLI tool to export Cassandra query to CSV and JSON format. Cassandra is not good at Ad-hoc query, *cqlkit* allows you to export query result to semi-structured(JSON) or structured data(CSV). There are many [tools](#recommended-3rd-party-tools) out there for you to query or process these kinds of format.
 
 Here is a simple some examples.
@@ -124,3 +125,6 @@ To connect to cassandra cluster, although we can use `-c` and `-k` to specify th
 
 - [jq](http://stedolan.github.io/jq/) - a lightweight and flexible command-line JSON processor.
 
+# Acknowledgement
+
+Fork from https://github.com/tenmax/cqlkit
